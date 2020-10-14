@@ -1,6 +1,7 @@
-#include "crypto.h"
-#include "stdexcept"
+#include <stdexcept>
 #include <openssl/err.h>
+#include <iostream>
+#include "crypto.h"
 
 namespace HW2 {
 
@@ -42,7 +43,8 @@ namespace HW2 {
         return privateRSA;
     }
 
-    void signMessage(std::string &message, unsigned char **signature, size_t *signatureLen, EVP_PKEY *privateRSA) {
+    void signMessage(std::vector<unsigned char> &message, unsigned char **signature, size_t *signatureLen,
+                     EVP_PKEY *privateRSA) {
         if (!signature || !signatureLen || !privateRSA) {
             throw std::runtime_error("Invalid arguments");
         }
@@ -73,7 +75,7 @@ namespace HW2 {
             throw std::runtime_error("EVP_DigestSignInit error");
         }
 
-        rc = EVP_DigestSignUpdate(ctx, message.c_str(), message.length());
+        rc = EVP_DigestSignUpdate(ctx, message.data(), message.size());
         if (rc != 1) {
             EVP_MD_CTX_destroy(ctx);
             throw std::runtime_error("EVP_DigestSignUpdate error");
@@ -101,7 +103,8 @@ namespace HW2 {
         EVP_MD_CTX_destroy(ctx);
     }
 
-    bool verifyMessage(std::string &message, const unsigned char *signature, size_t signatureLen, EVP_PKEY *publicRSA) {
+    bool verifyMessage(std::vector<unsigned char> &message, const unsigned char *signature, size_t signatureLen,
+                       EVP_PKEY *publicRSA) {
         if (!signature || !signatureLen || !publicRSA) {
             throw std::runtime_error("Invalid arguments");
         }
@@ -129,16 +132,18 @@ namespace HW2 {
             throw std::runtime_error("EVP_DigestVerifyInit error");
         }
 
-        rc = EVP_DigestVerifyUpdate(ctx, message.c_str(), message.length());
+        rc = EVP_DigestVerifyUpdate(ctx, message.data(), message.size());
         if (rc != 1) {
             EVP_MD_CTX_destroy(ctx);
             throw std::runtime_error("EVP_DigestVerifyUpdate error");
         }
 
         rc = EVP_DigestVerifyFinal(ctx, signature, signatureLen);
+        std::cout << "EVP_DigestVerifyFinal: " << rc << std::endl;
         if (!(rc == 1 || rc == 0)) {
             EVP_MD_CTX_destroy(ctx);
-            throw std::runtime_error("EVP_DigestVerifyFinal error: " + std::string(ERR_reason_error_string(ERR_peek_last_error())));
+            throw std::runtime_error("EVP_DigestVerifyFinal error: "
+                                     + std::string(ERR_reason_error_string(ERR_peek_last_error())));
         }
         EVP_MD_CTX_destroy(ctx);
         return !!rc;

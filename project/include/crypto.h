@@ -2,10 +2,9 @@
 #define HW2_CRYPTO_H
 
 #include <string>
-typedef unsigned char byte;
-extern "C" {
+#include <vector>
 #include <openssl/pem.h>
-};
+
 namespace HW2 {
     /**
      * Reading the key file into a special structure
@@ -26,7 +25,7 @@ namespace HW2 {
      * @param signatureLen
      * @param privateRSA
      */
-    void signMessage(std::string &message, unsigned char **signature, size_t *signatureLen, EVP_PKEY *privateRSA);
+    void signMessage(std::vector<unsigned char> &message, unsigned char **signature, size_t *signatureLen, EVP_PKEY *privateRSA);
     /**
      * Verify the message signature.
      * @param message
@@ -35,7 +34,7 @@ namespace HW2 {
      * @param publicRSA
      * @return whether the signature is correct
      */
-    bool verifyMessage(std::string &message, const unsigned char *signature, size_t signatureLen, EVP_PKEY *publicRSA);
+    bool verifyMessage(std::vector<unsigned char> &message, const unsigned char *signature, size_t signatureLen, EVP_PKEY *publicRSA);
 
 }  // namespace HW2
 

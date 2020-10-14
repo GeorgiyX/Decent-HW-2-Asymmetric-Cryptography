@@ -2,62 +2,59 @@
 #define HW2_UTILS_H
 
 #include <string>
+#include <vector>
 
 namespace HW2 {
     class Trinket {
     public:
         /**
-         * @param pathToPrivateKey - path to trinket .priv file
+         * @param pathToPrivateKey - path to trinket private key file
          */
-        Trinket(std::string pathToPrivateKey);
+        explicit Trinket(const char *pathToPrivateKey);
 
         /**
          * Make "open door" request
          * @return "open door" string
          */
-        std::string trinketGenerateHandShake();
+        std::string generateHandshake();
 
         /**
          * Trinket makes a signature for the received challenge value
          * @return only the signature
          */
-        std::string trinketProcessChallenge(std::string);
-
+        std::string processChallenge(const std::string &challengeValue);
 
     private:
-        /**
-         * Make rsa sign
-         * @return coded input
-         */
-        std::string trinketMakeSign(int);
-
-        std::string _privateKey;
+        bool _isWaitChallenge;
+        const char *_privateKeyPath;
     };
 
 
     class Car {
     public:
         /**
-         * @param pathToPublicKey - path to trinket .pub file
+         * @param pathToPublicKey - path to trinket public key file
          */
-        Car(std::string pathToPublicKey);
+        explicit Car(const char *pathToPublicKey);
 
         /**
          * The car starts the challenge: generate a random value that the trinket must sign
          * @return a random value for the trinket challenge
          */
-        int carProcessHandshake(std::string);
+        std::string processHandshake(const std::string &trinketHello);
 
         /**
          * Checking that the challenge value signature made by a true trinket
          * @return is the challenge successful
          */
-        bool carVerifySign(std::string);
+        bool verifySign(const std::string &challengeResponse);
 
     private:
-        std::string _publicKey;
-        int _challengeValue;
+        const char * _publicKey;
+        std::vector<unsigned char> _challengeValue;
     };
+
+
 }  // namespace HW2
 
 #endif  // HW2_UTILS_H
