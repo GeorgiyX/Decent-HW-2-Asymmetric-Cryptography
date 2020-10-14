@@ -139,7 +139,6 @@ namespace HW2 {
         }
 
         rc = EVP_DigestVerifyFinal(ctx, signature, signatureLen);
-        std::cout << "EVP_DigestVerifyFinal: " << rc << std::endl;
         if (!(rc == 1 || rc == 0)) {
             EVP_MD_CTX_destroy(ctx);
             throw std::runtime_error("EVP_DigestVerifyFinal error: "

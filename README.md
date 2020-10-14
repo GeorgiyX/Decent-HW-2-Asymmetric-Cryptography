@@ -30,5 +30,5 @@ cmake .. && cmake --build .
 Запускать программу нужно из корневой папки:
 
 ```bash
-./build/project/hw-2
+./build/hw-2
 ```
