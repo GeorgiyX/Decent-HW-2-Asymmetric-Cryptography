@@ -60,4 +60,4 @@ namespace HW2 {
     };
 }  // namespace HW2
 
-#endif //HW2_UTILS_H
+#endif  // HW2_UTILS_H

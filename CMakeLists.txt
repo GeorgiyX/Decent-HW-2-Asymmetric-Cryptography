@@ -5,5 +5,7 @@ set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror")
 
 include_directories(project/include)
+find_package(OpenSSL REQUIRED)
 
-add_executable(HW_2 project/src/main.cpp project/include/utils.h project/src/utils.cpp)
+add_executable(hw-2 project/src/main.cpp project/include/utils.h project/src/utils.cpp project/src/crypto.cpp project/include/crypto.h)
+target_link_libraries(hw-2 OpenSSL::Crypto)
