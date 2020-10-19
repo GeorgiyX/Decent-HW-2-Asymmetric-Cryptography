@@ -33,6 +33,13 @@ cmake .. && cmake --build .
 ./build/hw-2
 ```
 
-Скриншот пробного запуска:
+Скриншоты работы:
 
-![ExampleRunHW2](./.img/ExampleRunHW2.png)
+1. Удачный запуск (брелок создает корректные подписи рандома, которые можно проверить публичным ключем автомобиля).
+
+![ExampleRunHW2](.img/ExampleRunHW2.png)
+
+2. Не удачный запуск (приватный ключ брелока не соответствует публичному ключу автомобиля).
+
+![ExampleRunHW2(invalid_key)](.img/ExampleRunHW2(invalid_key).png)
+
