@@ -32,3 +32,7 @@ cmake .. && cmake --build .
 ```bash
 ./build/hw-2
 ```
+
+Скриншот пробного запуска:
+
+![ExampleRunHW2](./.img/ExampleRunHW2.png)
