@@ -1,13 +1,15 @@
 #include <stdexcept>
 #include <openssl/err.h>
 #include <iostream>
+#include <openssl/rand.h>
+#include <memory>
 #include "crypto.h"
 
 namespace HW2 {
 
     const char *HASHER = "SHA256";
 
-    EVP_PKEY *readPublicKey(const char *keyPath) {
+    std::shared_ptr<EVP_PKEY> readPublicKey(const char *keyPath) {
         FILE *fp = fopen(keyPath, "r");
         if (!fp) {
             throw std::runtime_error("Can't open public key file: " + std::string(keyPath));
@@ -20,7 +22,8 @@ namespace HW2 {
         }
 
         BIO_set_fp(bio, fp, BIO_NOCLOSE);
-        EVP_PKEY *publicRSA = PEM_read_bio_PUBKEY(bio, nullptr, nullptr, nullptr);
+        std::shared_ptr<EVP_PKEY> publicRSA(PEM_read_bio_PUBKEY(bio, nullptr, nullptr, nullptr),
+                                            EVP_PKEY_free);
         BIO_free(bio);
         fclose(fp);
         if (!publicRSA) {
@@ -29,13 +32,14 @@ namespace HW2 {
         return publicRSA;
     }
 
-    EVP_PKEY *readPrivateKey(const char *keyPath) {
+    std::shared_ptr<EVP_PKEY> readPrivateKey(const char *keyPath) {
         FILE *fp = fopen(keyPath, "r");
         if (!fp) {
             throw std::runtime_error("Can't open private key file: " + std::string(keyPath));
         }
 
-        EVP_PKEY *privateRSA = PEM_read_PrivateKey(fp, nullptr, nullptr, nullptr);
+        std::shared_ptr<EVP_PKEY> privateRSA(PEM_read_PrivateKey(fp, nullptr, nullptr, nullptr),
+                                             EVP_PKEY_free);
         fclose(fp);
         if (!privateRSA) {
             throw std::runtime_error("Can't read private key");
@@ -146,5 +150,14 @@ namespace HW2 {
         }
         EVP_MD_CTX_destroy(ctx);
         return !!rc;
+    }
+
+    void setRandBytes(std::vector<unsigned char> &buffer, size_t randomLength) {
+        /* OpenSSL is configured to automatically seed the CSPRNG
+         * on first use using the operating systems's random generator. */
+        int rc = RAND_bytes(buffer.data(), randomLength);
+        if (rc != 1) {
+            throw std::runtime_error("RAND_bytes error");
+        }
     }
 }  // namespace HW2

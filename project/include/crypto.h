@@ -9,15 +9,15 @@ namespace HW2 {
     /**
      * Reading the key file into a special structure
      * @param keyPath - path to public key file
-     * @return pointer to EVP_PKEY or nullptr. Remember to use EVP_PKEY_free.
+     * @return shared pointer to EVP_PKEY.
      */
-    EVP_PKEY *readPublicKey(const char *keyPath);
+    std::shared_ptr<EVP_PKEY> readPublicKey(const char *keyPath);
     /**
      * Reading the key file into a special structure
      * @param keyPath - path to public key file
-     * @return pointer to EVP_PKEY or nullptr. Remember to use EVP_PKEY_free.
+     * @return shared pointer to EVP_PKEY.
      */
-    EVP_PKEY *readPrivateKey(const char *keyPath);
+    std::shared_ptr<EVP_PKEY> readPrivateKey(const char *keyPath);
     /**
      * Generates a signature for a message.
      * @param message
@@ -35,6 +35,10 @@ namespace HW2 {
      * @return whether the signature is correct
      */
     bool verifyMessage(std::vector<unsigned char> &message, const unsigned char *signature, size_t signatureLen, EVP_PKEY *publicRSA);
+    /**
+     * Wrapper around RAND_bytes
+     */
+    void setRandBytes(std::vector<unsigned char> &buffer);
 
 }  // namespace HW2
 
