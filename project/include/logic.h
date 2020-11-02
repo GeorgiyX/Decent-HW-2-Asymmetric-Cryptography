@@ -16,7 +16,7 @@ namespace HW2 {
         Trinket(const char *trinketPrivateKey, const char *carPublicKey);
 
         /**
-         * Generates a random for testing the car
+         * Generates a random for testing the car and start the door opening process
          * @return random string
          */
         std::string generateChallenge();
@@ -39,28 +39,29 @@ namespace HW2 {
     class Car {
     public:
         /**
-         * @param pathToPublicKey - path to trinket public key file
+         * Construct car
+         * @param carPrivateKey
+         * @param trinketPublicKey
          */
-        explicit Car(const char *pathToPublicKey);
+        Car(const char *carPrivateKey, const char *trinketPublicKey);
 
         /**
          * The car signs accepted challenge then generate a random value that the trinket must sign
          * @return a random value for the trinket challenge
          */
-        std::string processChallenge(const std::string &trinketChallenge);
+        std::string processChallenge(const std::string &challenge);
 
         /**
          * Checking that the challenge value signature made by a true trinket
          * @return is the challenge successful
          */
-        bool verifyChallengeSign(const std::string &challengeResponse);
+        bool verifyChallengeSign(const std::string &trinketResponse);
 
     private:
         std::shared_ptr<EVP_PKEY> _carPrivateKey;
         std::shared_ptr<EVP_PKEY> _trinketPublicKey;
         std::vector<unsigned char> _challengeValue;
     };
-
 
 }  // namespace HW2
 

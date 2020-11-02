@@ -47,7 +47,7 @@ namespace HW2 {
         return privateRSA;
     }
 
-    void signMessage(std::vector<unsigned char> &message, unsigned char **signature, size_t *signatureLen,
+    void signMessage(std::string message, unsigned char **signature, size_t *signatureLen,
                      EVP_PKEY *privateRSA) {
         if (!signature || !signatureLen || !privateRSA) {
             throw std::runtime_error("Invalid arguments");
@@ -107,9 +107,8 @@ namespace HW2 {
         EVP_MD_CTX_destroy(ctx);
     }
 
-    bool verifyMessage(std::vector<unsigned char> &message, const unsigned char *signature, size_t signatureLen,
-                       EVP_PKEY *publicRSA) {
-        if (!signature || !signatureLen || !publicRSA) {
+    bool verifyMessage(std::vector<unsigned char> &message, std::string signature, EVP_PKEY *publicRSA) {
+        if (signature.empty() || !publicRSA) {
             throw std::runtime_error("Invalid arguments");
         }
 
@@ -142,7 +141,7 @@ namespace HW2 {
             throw std::runtime_error("EVP_DigestVerifyUpdate error");
         }
 
-        rc = EVP_DigestVerifyFinal(ctx, signature, signatureLen);
+        rc = EVP_DigestVerifyFinal(ctx, reinterpret_cast<const unsigned char *>(signature.data()), signature.size());
         if (!(rc == 1 || rc == 0)) {
             EVP_MD_CTX_destroy(ctx);
             throw std::runtime_error("EVP_DigestVerifyFinal error: "

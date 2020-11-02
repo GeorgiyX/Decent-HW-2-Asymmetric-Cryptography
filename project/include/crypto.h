@@ -20,21 +20,22 @@ namespace HW2 {
     std::shared_ptr<EVP_PKEY> readPrivateKey(const char *keyPath);
     /**
      * Generates a signature for a message.
+     * @todo return string, remove signature & signatureLen
      * @param message
      * @param signature Remember to use OPENSSL_free.
      * @param signatureLen
      * @param privateRSA
      */
-    void signMessage(std::vector<unsigned char> &message, unsigned char **signature, size_t *signatureLen, EVP_PKEY *privateRSA);
+    void signMessage(std::string message, unsigned char **signature, size_t *signatureLen, EVP_PKEY *privateRSA);
     /**
      * Verify the message signature.
+     * @todo EVP_PKEY - shared ptr
      * @param message
      * @param signature
-     * @param signatureLen
      * @param publicRSA
      * @return whether the signature is correct
      */
-    bool verifyMessage(std::vector<unsigned char> &message, const unsigned char *signature, size_t signatureLen, EVP_PKEY *publicRSA);
+    bool verifyMessage(std::vector<unsigned char> &message, std::string signature, EVP_PKEY *publicRSA);
     /**
      * Wrapper around RAND_bytes
      */
